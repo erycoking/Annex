@@ -29,7 +29,7 @@ namespace Annex.Migrations
                 Address = "PO BOX 536, Nakuru",
                 NationalId = 30765210,
                 MobileNo = 0702554146,
-                Photo = Encoding.ASCII.GetBytes("erycoking.jpg")
+                Photo = "erycoking.jpg"
             });
 
             CustomerList.Add(new Customer()
@@ -39,7 +39,7 @@ namespace Annex.Migrations
                 Address = "PO BOX 100, Migori",
                 NationalId = 30765211,
                 MobileNo = 0702554141,
-                Photo = Encoding.ASCII.GetBytes("nemayian.jpg")
+                Photo = "nesh.jpg"
             });
 
             CustomerList.Add(new Customer()
@@ -49,7 +49,7 @@ namespace Annex.Migrations
                 Address = "PO BOX 536, Nakuru",
                 NationalId = 30764210,
                 MobileNo = 0702554156,
-                Photo = Encoding.ASCII.GetBytes("kevin.jpg")
+                Photo = "kevo.jpg"
             });
 
             CustomerList.Add(new Customer()
@@ -59,7 +59,7 @@ namespace Annex.Migrations
                 Address = "PO BOX 100, NewYork",
                 NationalId = 30765230,
                 MobileNo = 0703554146,
-                Photo = Encoding.ASCII.GetBytes("erycoking.jpg")
+                Photo = "bill.jpg"
             });
 
             CustomerList.Add(new Customer()
@@ -69,7 +69,7 @@ namespace Annex.Migrations
                 Address = "PO BOX 10, Nakuru",
                 NationalId = 30775210,
                 MobileNo = 0702514146,
-                Photo = Encoding.ASCII.GetBytes("erycoking.jpg")
+                Photo = "pato.jpg"
             });
 
             CustomerList.Add(new Customer()
@@ -79,7 +79,7 @@ namespace Annex.Migrations
                 Address = "PO BOX 200, Kisumo",
                 NationalId = 30765010,
                 MobileNo = 0702554106,
-                Photo = Encoding.ASCII.GetBytes("emmanuel.jpg")
+                Photo = "emma.jpg"
             });
 
             //context.Customers.AddRange(CustomerList);
