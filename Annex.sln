@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Annex", "Annex\Annex.csproj", "{42B7ACEB-9C76-443C-BEA0-6352EC73A4F1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42B7ACEB-9C76-443C-BEA0-6352EC73A4F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B7ACEB-9C76-443C-BEA0-6352EC73A4F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B7ACEB-9C76-443C-BEA0-6352EC73A4F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B7ACEB-9C76-443C-BEA0-6352EC73A4F1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4496F419-C962-400F-A357-12C6A6F87A33}
+	EndGlobalSection
+EndGlobal
