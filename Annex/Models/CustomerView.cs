@@ -6,16 +6,12 @@ using System.Web;
 
 namespace Annex.Models
 {
-    /// <summary>
-    /// customer details class{POJO}
-    /// </summary>
-    public partial class Customer
+    public class CustomerView
     {
-        [Key]
         public int CustomerId { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 1)]
-        public string FirstName  { get; set; }
+        public string FirstName { get; set; }
         [Required]
         [StringLength(100, MinimumLength = 1)]
         public string OtherNames { get; set; }
@@ -27,6 +23,6 @@ namespace Annex.Models
         [Required]
         public int MobileNo { get; set; }
         [Required]
-        public string Photo { get; set; }
+        public HttpPostedFile Photo { get; set; }
     }
 }
