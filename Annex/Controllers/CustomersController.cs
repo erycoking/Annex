@@ -32,6 +32,8 @@ namespace Annex.Controllers
         }
 
         // GET: api/Customers/5
+        [HttpGet]
+        [Route("~/api/Customers/{id:int}")]
         [ResponseType(typeof(Customer))]
         public IHttpActionResult GetCustomer(int id)
         {
@@ -41,6 +43,58 @@ namespace Annex.Controllers
                 return NotFound();
             }
             
+
+            customer.Photo = getImage(customer.Photo);
+            return Ok(customer);
+        }
+
+        // GET: api/Customers/fname
+        [HttpGet]
+        [Route("~/api/Customers/{name}")]
+        [ResponseType(typeof(Customer))]
+        public IHttpActionResult GetCustomerByFirstName(string name)
+        {
+            Customer customer = db.Customers.Where(e => e.FirstName == name).First();
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+
+            customer.Photo = getImage(customer.Photo);
+            return Ok(customer);
+        }
+
+        // GET: api/Customers/NationalId/national_id_no
+        [HttpGet]
+        [Route("~/api/Customers/NationalId/{id:int}")]
+        [ResponseType(typeof(Customer))]
+        public IHttpActionResult GetCustomerByNationalId(int id)
+        {
+            Customer customer = db.Customers.Where(e => e.NationalId == id).First();
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+
+            customer.Photo = getImage(customer.Photo);
+            return Ok(customer);
+        }
+
+        // GET: api/Customers/mobileNo
+        [ResponseType(typeof(Customer))]
+        [HttpGet]
+        [Route("~/api/Customers/mobile/{MobileNo:int}")]
+        [ResponseType(typeof(Customer))]
+        public IHttpActionResult GetCustomerMobileNo(int MobileNo)
+        {
+            Customer customer = db.Customers.Where(e => e.MobileNo == MobileNo).First();
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
 
             customer.Photo = getImage(customer.Photo);
             return Ok(customer);
