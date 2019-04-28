@@ -52,9 +52,9 @@ namespace Annex.Controllers
         [HttpGet]
         [Route("~/api/Customers/{name}")]
         [ResponseType(typeof(Customer))]
-        public IHttpActionResult GetCustomerByFirstName(string name)
+        public IHttpActionResult GetCustomerByName(string name)
         {
-            Customer customer = db.Customers.Where(e => e.FirstName == name).First();
+            Customer customer = db.Customers.Where(e => e.FullName.Contains(name)).First();
             if (customer == null)
             {
                 return NotFound();
@@ -193,6 +193,7 @@ namespace Annex.Controllers
             customer1.Address = customer.Address;
             customer1.NationalId = customer.NationalId;
             customer1.MobileNo = customer.MobileNo;
+            customer1.FullName = customer.FirstName + " " + customer.OtherNames;
 
             // get file name
             string ImageName = new String(Path.GetFileNameWithoutExtension(customer.Photo.FileName)

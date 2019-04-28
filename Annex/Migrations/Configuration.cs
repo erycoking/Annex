@@ -26,6 +26,7 @@ namespace Annex.Migrations
             {
                 FirstName = "Erick",
                 OtherNames = "Loningo Lomunyak",
+                FullName = "Erick Loningo Lomunyak",
                 Address = "PO BOX 536, Nakuru",
                 NationalId = 30765210,
                 MobileNo = 0702554146,
@@ -36,6 +37,7 @@ namespace Annex.Migrations
             {
                 FirstName = "Berverly",
                 OtherNames = "Nemayian",
+                FullName = "Berverly Nemayian",
                 Address = "PO BOX 100, Migori",
                 NationalId = 30765211,
                 MobileNo = 0702554141,
@@ -46,6 +48,7 @@ namespace Annex.Migrations
             {
                 FirstName = "Kevin",
                 OtherNames = "Kamau",
+                FullName = "Kevin Kevin",
                 Address = "PO BOX 536, Nakuru",
                 NationalId = 30764210,
                 MobileNo = 0702554156,
@@ -56,6 +59,7 @@ namespace Annex.Migrations
             {
                 FirstName = "Bill",
                 OtherNames = "Gates",
+                FullName = "Bill Gates",
                 Address = "PO BOX 100, NewYork",
                 NationalId = 30765230,
                 MobileNo = 0703554146,
@@ -66,6 +70,7 @@ namespace Annex.Migrations
             {
                 FirstName = "Patrick",
                 OtherNames = "Ngumo",
+                FullName = "Patrick Ngumo",
                 Address = "PO BOX 10, Nakuru",
                 NationalId = 30775210,
                 MobileNo = 0702514146,
@@ -76,14 +81,15 @@ namespace Annex.Migrations
             {
                 FirstName = "Emmanuel",
                 OtherNames = "Waganda",
+                FullName = "Emmanuel Waganda",
                 Address = "PO BOX 200, Kisumo",
                 NationalId = 30765010,
                 MobileNo = 0702554106,
                 Photo = "emma.jpg"
             });
 
-            //context.Customers.AddRange(CustomerList);
-            //base.Seed(context);
+            context.Customers.AddRange(CustomerList);
+            base.Seed(context);
 
         }
     }
