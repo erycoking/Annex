@@ -7,10 +7,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Annex.Models;
+using Newtonsoft.Json;
 
 namespace Annex.Controllers
 {
@@ -19,6 +21,8 @@ namespace Annex.Controllers
         private CustomerDbContext db = new CustomerDbContext();
 
         // GET: api/Customers
+        [HttpGet]
+        [Route("~/api/Customers")]
         public IHttpActionResult GetCustomers()
         {
             List<Customer> customers = new List<Customer>();
@@ -101,20 +105,75 @@ namespace Annex.Controllers
         }
 
         // PUT: api/Customers/5
+        [HttpPut]
+        [Route("~/api/Customers/{id:int}")]
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutCustomer(int id, CustomerView customer)
+        public IHttpActionResult PutCustomer(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            if (id != customer.CustomerId)
+            var httpRequest = HttpContext.Current.Request;
+            Dictionary<string, string> cust = JsonConvert.DeserializeObject<Dictionary<string, string>>(httpRequest.Form["customer"]);
+            var imageFile = httpRequest.Files["imageFile"];
+
+            if (id != Int32.Parse(cust["CustomerId"]))
             {
                 return BadRequest();
             }
 
-            Customer customer1 = MapObjectAndSaveImage(customer);
+            if (imageFile == null)
+            {
+                return BadRequest("Image required");
+            }
+
+            if (cust["FirstName"] == null || cust["FirstName"] == "")
+            {
+                return BadRequest("FirstName required");
+            }
+
+            if (cust["OtherNames"] == null || cust["OtherNames"] == "")
+            {
+                return BadRequest("OtherNames required");
+            }
+
+            if (cust["Address"] == null || cust["Address"] == "")
+            {
+                return BadRequest("Address required");
+            }
+
+            if (cust["NationalId"] == null || cust["NationalId"] == "")
+            {
+                return BadRequest("NationalId required");
+            }
+
+            if (cust["MobileNo"] == null || cust["MobileNo"] == "")
+            {
+                return BadRequest("MobileNo required");
+            }
+
+            CustomerView customerView = new CustomerView()
+            {
+                CustomerId = Int32.Parse(cust["CustomerId"]),
+                FirstName = cust["FirstName"],
+                OtherNames = cust["OtherNames"],
+                Address = cust["Address"],
+                NationalId = Int32.Parse(cust["NationalId"]),
+                MobileNo = Int32.Parse(cust["MobileNo"])
+            };
+
+            Customer customer1 = MapObjectAndSaveImage(customerView);
+
+            // get file without extension
+            string imageWithoutExtension = Path.GetFileNameWithoutExtension(imageFile.FileName);
+            // get extension
+            string imageExtension = Path.GetExtension(imageFile.FileName);
+            // get file name, add rename and add timestamp
+            string ImageName = imageWithoutExtension + DateTime.Now.ToString("yymmssff") + imageExtension;
+            // set photo name
+            customer1.Photo = ImageName;
+
+            // save photo
+            imageFile.SaveAs(HttpContext.Current.Server.MapPath("~/Content/Images/" + ImageName));
+
             db.Entry(customer1).State = EntityState.Modified;
 
             try
@@ -129,7 +188,7 @@ namespace Annex.Controllers
                 }
                 else
                 {
-                    throw;
+                    return BadRequest("Ensure all fields are filled correctly");
                 }
             }
 
@@ -137,23 +196,92 @@ namespace Annex.Controllers
         }
 
         // POST: api/Customers
+        [HttpPost]
+        [Route("~/api/Customers", Name = "GetCustomer")]
         [ResponseType(typeof(Customer))]
-        public IHttpActionResult PostCustomer(CustomerView customerView)
+        public IHttpActionResult PostCustomer()
         {
-            if (!ModelState.IsValid)
+            var httpRequest = HttpContext.Current.Request;
+            Dictionary<string, string> cust = JsonConvert.DeserializeObject<Dictionary<string, string>>(httpRequest.Form["customer"]);
+            var imageFile = httpRequest.Files["imageFile"];
+
+            if (imageFile == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Image required");
             }
 
+            if (cust["FirstName"] == null || cust["FirstName"] == "")
+            {
+                return BadRequest("FirstName required");
+            }
+
+            if (cust["OtherNames"] == null || cust["OtherNames"] == "")
+            {
+                return BadRequest("OtherNames required");
+            }
+
+            if (cust["Address"] == null || cust["Address"] == "")
+            {
+                return BadRequest("Address rerequiredquied");
+            }
+
+            if (cust["NationalId"] == null || cust["NationalId"] == "")
+            {
+                return BadRequest("NationalId required");
+            }
+
+            if (cust["MobileNo"] == null || cust["MobileNo"] == "")
+            {
+                return BadRequest("MobileNo required");
+            }
+
+            CustomerView customerView = new CustomerView()
+            {
+                FirstName = cust["FirstName"],
+                OtherNames = cust["OtherNames"],
+                Address = cust["Address"],
+                NationalId = Int32.Parse(cust["NationalId"]),
+                MobileNo = Int32.Parse(cust["MobileNo"])
+            };
+
+
             Customer customer = MapObjectAndSaveImage(customerView);
+
+            // get file without extension
+            string imageWithoutExtension = Path.GetFileNameWithoutExtension(imageFile.FileName);
+            // get extension
+            string imageExtension = Path.GetExtension(imageFile.FileName);
+            // get file name, add rename and add timestamp
+            string ImageName = imageWithoutExtension + DateTime.Now.ToString("yymmssff") + imageExtension;
+            // set photo name
+            customer.Photo = ImageName;
+
             db.Customers.Add(customer);
-            db.SaveChanges();
+
+            try
+            {
+                // string ImageStoragePath = HttpContext.Current.Server.MapPath("~/Content/Images/");
+
+                // save photo
+                imageFile.SaveAs(HttpContext.Current.Server.MapPath("~/Content/Images/" + ImageName));
+
+                db.SaveChanges();
+
+                // send notification
+                sendNotification(customer);
+            }
+            catch
+            {
+                return BadRequest("Ensure all input are filled");
+            }
 
             customer.Photo = getImage(customer.Photo);
-            return CreatedAtRoute("DefaultApi", new { id = customer.CustomerId }, customer);
+            return CreatedAtRoute("GetCustomer", new { id = customer.CustomerId }, customer);
         }
 
         // DELETE: api/Customers/5
+        [HttpDelete]
+        [Route("~/api/Customers/{id:int}")]
         [ResponseType(typeof(Customer))]
         public IHttpActionResult DeleteCustomer(int id)
         {
@@ -195,20 +323,6 @@ namespace Annex.Controllers
             customer1.MobileNo = customer.MobileNo;
             customer1.FullName = customer.FirstName + " " + customer.OtherNames;
 
-            // get file name
-            string ImageName = new String(Path.GetFileNameWithoutExtension(customer.Photo.FileName)
-                .Take(10).ToArray()).Replace(" ", "-");
-
-            // add rename and add timestamp
-            ImageName = ImageName + DateTime.Now.ToString("yymmssff") + Path.GetExtension(customer.Photo.FileName);
-            string Image = HttpContext.Current.Server.MapPath("~/Content/Images/" + ImageName);
-
-            // save photo
-            customer.Photo.SaveAs(Image);
-
-            // set photo name
-            customer1.Photo = ImageName;
-
             return customer1;
         }
 
@@ -217,5 +331,48 @@ namespace Annex.Controllers
             return Path.Combine(HttpRuntime.AppDomainAppVirtualPath,
                     String.Format("/Content/Images/{0}", image));
         }
+
+        public void sendNotification(Customer customer)
+        {
+            WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+            tRequest.Method = "post";
+            //serverKey - Key from Firebase cloud messaging server  
+            tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAA7d7tzg8:APA91bE6aATljQdU_pwk7Md4uyiRZ52jQTDy9aWaYeYqouP7IAVOzOpqkGHXpWZd1tfbRFXHP8hvRCv2OVUfa3Chf0ZDXNwT5vT8XHamG8_fyEUiOyffX9-0fKMD6X22xfENM-YNKgR3"));
+            //Sender Id - From firebase project setting  
+            tRequest.Headers.Add(string.Format("Sender: id={0}", "1021647375887"));
+            tRequest.ContentType = "application/json";
+            var payload = new
+            {
+                to = "1:1021647375887:android:d7bcdabe21e11bc2",
+                priority = "high",
+                content_available = true,
+                notification = new
+                {
+                    body = customer.FullName + " Successfully Added",
+                    title = "Annex",
+                    badge = 1
+                },
+            };
+
+            string postbody = JsonConvert.SerializeObject(payload).ToString();
+            Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
+            tRequest.ContentLength = byteArray.Length;
+            using (Stream dataStream = tRequest.GetRequestStream())
+            {
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                using (WebResponse tResponse = tRequest.GetResponse())
+                {
+                    using (Stream dataStreamResponse = tResponse.GetResponseStream())
+                    {
+                        if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                            {
+                                String sResponseFromServer = tReader.ReadToEnd();
+                                //result.Response = sResponseFromServer;
+                            }
+                    }
+                }
+            }
+        }
+
     }
 }
